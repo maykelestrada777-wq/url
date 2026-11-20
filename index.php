@@ -1,0 +1,106 @@
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+$datosJson = file_get_contents(__DIR__ . '/data-1.json');
+$propiedades = json_decode($datosJson, true);
+if (!is_array($propiedades)) {
+    $propiedades = [];
+}
+
+$ciudades = [];
+$tipos = [];
+
+foreach ($propiedades as $item) {
+    if (!empty($item['Ciudad'])) {
+        $ciudades[] = trim($item['Ciudad']);
+    }
+    if (!empty($item['Tipo'])) {
+        $tipos[] = trim($item['Tipo']);
+    }
+}
+
+$ciudades = array_unique($ciudades);
+$tipos = array_unique($tipos);
+sort($ciudades);
+sort($tipos);
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
+  <link type="text/css" rel="stylesheet" href="css/customColors.css" media="screen,projection"/>
+  <link type="text/css" rel="stylesheet" href="css/ion.rangeSlider.css" media="screen,projection"/>
+  <link type="text/css" rel="stylesheet" href="css/ion.rangeSlider.skinFlat.css" media="screen,projection"/>
+  <link type="text/css" rel="stylesheet" href="css/index.css" media="screen,projection"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buscador</title>
+</head>
+<body>
+  <video src="img/video.mp4" id="vidFondo"></video>
+
+  <div class="contenedor">
+    <div class="card rowTitulo">
+      <h1>Buscador</h1>
+    </div>
+
+    <div class="colFiltros">
+      <form action="buscador.php" method="post" id="formulario">
+        <div class="filtrosContenido">
+          <div class="tituloFiltros">
+            <h5>Realiza una búsqueda personalizada</h5>
+          </div>
+
+          <div class="filtroCiudad input-field">
+            <label for="selectCiudad">Ciudad:</label><br><br>
+            <select name="ciudad" id="selectCiudad" class="browser-default">
+              <option value="" selected>Elige una ciudad</option>
+              <?php foreach ($ciudades as $ciudad): ?>
+                <option value="<?= htmlspecialchars($ciudad, ENT_QUOTES, 'UTF-8') ?>">
+                  <?= htmlspecialchars($ciudad, ENT_QUOTES, 'UTF-8') ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+
+          <div class="filtroTipo input-field">
+            <label for="selectTipo">Tipo:</label><br><br>
+            <select name="tipo" id="selectTipo" class="browser-default">
+              <option value="" selected>Elige un tipo</option>
+              <?php foreach ($tipos as $tipo): ?>
+                <option value="<?= htmlspecialchars($tipo, ENT_QUOTES, 'UTF-8') ?>">
+                  <?= htmlspecialchars($tipo, ENT_QUOTES, 'UTF-8') ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+
+          <div class="filtroPrecio">
+            <label for="rangoPrecio">Precio:</label>
+            <input type="text" id="rangoPrecio" name="precio" value="" />
+          </div>
+
+          <div class="botonField">
+            <input type="submit" class="btn white" value="Buscar" id="submitButton">
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="colResultados">
+      <div class="tituloResultados">
+        <h5>Resultados de la búsqueda:</h5>
+        <button type="button" class="btn-flat waves-effect" id="mostrarTodos">Mostrar Todos</button>
+      </div>
+      <div id="resultadosLista"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+  <script type="text/javascript" src="js/ion.rangeSlider.min.js"></script>
+  <script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>
